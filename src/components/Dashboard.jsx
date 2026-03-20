@@ -12,8 +12,7 @@ export default function Dashboard({ items, onDelete }) {
   );
 
   const totalCalories = items.reduce(
-    (sum, i) =>
-      sum + Number(i.caloriesPer100g || 0) * Number(i.quantity || 1),
+    (sum, i) => sum + Number(i.caloriesPer100g || 0) * Number(i.quantity || 1),
     0
   );
 
@@ -40,11 +39,9 @@ export default function Dashboard({ items, onDelete }) {
 
       <div className="itemList">
         {items.length === 0 ? (
-          <div className="emptyState">
-            No items yet. Scan something!
-          </div>
+          <div className="emptyState">No items yet. Scan something!</div>
         ) : (
-          items.map(item => (
+          items.map((item) => (
             <motion.div
               key={item.id}
               className="itemCard"
@@ -52,20 +49,13 @@ export default function Dashboard({ items, onDelete }) {
               animate={{ opacity: 1, y: 0 }}
             >
               <div className="itemThumb">
-                {item.image ? (
-                  <img src={item.image} alt={item.name} />
-                ) : (
-                  <span>SC</span>
-                )}
+                {item.image ? <img src={item.image} alt={item.name} /> : <span>SC</span>}
               </div>
 
               <div className="itemBody">
                 <div className="itemTitleRow">
                   <h3>{item.name}</h3>
-                  <button
-                    className="iconBtn danger"
-                    onClick={() => onDelete(item.id)}
-                  >
+                  <button className="iconBtn danger" onClick={() => onDelete(item.id)}>
                     Delete
                   </button>
                 </div>
@@ -77,18 +67,11 @@ export default function Dashboard({ items, onDelete }) {
                 <div className="itemMeta">
                   <span>
                     Price:{" "}
-                    {money(
-                      Number(item.price || 0) *
-                        Number(item.quantity || 1)
-                    )}
+                    {money(Number(item.price || 0) * Number(item.quantity || 1))}
                   </span>
                   <span>Qty: {item.quantity}</span>
-                  <span>
-                    Cal/100g: {item.caloriesPer100g || 0}
-                  </span>
-                  <span>
-                    Category: {item.category || "General"}
-                  </span>
+                  <span>Cal/100g: {item.caloriesPer100g || 0}</span>
+                  <span>Category: {item.category || "General"}</span>
                 </div>
               </div>
             </motion.div>

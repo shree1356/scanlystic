@@ -2,7 +2,6 @@
   --bg:#eef4ff;
   --bg2:#f8fbff;
   --card:#ffffff;
-  --card2:#f7fbff;
   --stroke:rgba(15,23,42,.08);
   --stroke2:rgba(15,23,42,.12);
   --text:#0f172a;
@@ -10,8 +9,8 @@
   --mint:#14b8a6;
   --blue:#2563eb;
   --amber:#f59e0b;
-  --rose:#fb7185;
   --violet:#8b5cf6;
+  --rose:#fb7185;
   --shadow:0 18px 50px rgba(15,23,42,.08);
   --radius:24px;
 }
@@ -45,7 +44,9 @@ img{
   max-width:100%;
 }
 
-button,input,textarea{
+button,
+input,
+textarea{
   font:inherit;
 }
 
@@ -185,7 +186,8 @@ button:active{
   width:100%;
 }
 
-.leftPane,.rightPane{
+.leftPane,
+.rightPane{
   display:flex;
   flex-direction:column;
   gap:18px;

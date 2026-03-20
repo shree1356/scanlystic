@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useMemo, useState } from "react";
+import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Scanner from "./components/Scanner";
 import Dashboard from "./components/Dashboard";
@@ -61,6 +61,9 @@ export default function App() {
   const [draftCategory, setDraftCategory] = useState("Uncategorized");
   const [showSplash, setShowSplash] = useState(true);
 
+  const splashDoneRef = useRef(false);
+  const splashTimerRef = useRef(null);
+
   const refreshData = async () => {
     const saved = await getProducts();
     const deleted = await getTrash();
@@ -73,8 +76,16 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const t = setTimeout(() => setShowSplash(false), 1600);
-    return () => clearTimeout(t);
+    if (splashDoneRef.current) return;
+    splashDoneRef.current = true;
+
+    splashTimerRef.current = setTimeout(() => {
+      setShowSplash(false);
+    }, 1600);
+
+    return () => {
+      if (splashTimerRef.current) clearTimeout(splashTimerRef.current);
+    };
   }, []);
 
   useEffect(() => {
@@ -172,18 +183,17 @@ export default function App() {
   );
 
   const totalCalories = useMemo(
-    () => items.reduce(
-      (sum, item) => sum + Number(item.caloriesPer100g || 0) * Number(item.quantity || 1),
-      0
-    ),
+    () =>
+      items.reduce(
+        (sum, item) => sum + Number(item.caloriesPer100g || 0) * Number(item.quantity || 1),
+        0
+      ),
     [items]
   );
 
   return (
     <>
-      <AnimatePresence>
-        {showSplash && <SplashScreen />}
-      </AnimatePresence>
+      <AnimatePresence>{showSplash && <SplashScreen />}</AnimatePresence>
 
       <div className="appShell">
         <div className="bgGlow bg1" />
@@ -241,39 +251,25 @@ export default function App() {
                 >
                   <div className="detectedTop">
                     <div className="productShot">
-                      {selected.image ? (
-                        <img src={selected.image} alt={selected.name} />
-                      ) : (
-                        <span>OK</span>
-                      )}
+                      {selected.image ? <img src={selected.image} alt={selected.name} /> : <span>OK</span>}
                     </div>
 
                     <div className="productInfo">
                       <h3>{selected.name}</h3>
-                      <p className="muted">
-                        {selected.brand || "No brand"} · {selected.barcode}
-                      </p>
-                      <p className="muted">
-                        Category: {selected.category || "Uncategorized"}
-                      </p>
+                      <p className="muted">{selected.brand || "No brand"} · {selected.barcode}</p>
+                      <p className="muted">Category: {selected.category || "Uncategorized"}</p>
                     </div>
                   </div>
 
                   <div className="formGrid">
                     <label>
                       Product name
-                      <input
-                        value={draftName}
-                        onChange={(e) => setDraftName(e.target.value)}
-                      />
+                      <input value={draftName} onChange={(e) => setDraftName(e.target.value)} />
                     </label>
 
                     <label>
                       Brand
-                      <input
-                        value={draftBrand}
-                        onChange={(e) => setDraftBrand(e.target.value)}
-                      />
+                      <input value={draftBrand} onChange={(e) => setDraftBrand(e.target.value)} />
                     </label>
 
                     <label>
@@ -312,10 +308,7 @@ export default function App() {
 
                     <label>
                       Category
-                      <input
-                        value={draftCategory}
-                        onChange={(e) => setDraftCategory(e.target.value)}
-                      />
+                      <input value={draftCategory} onChange={(e) => setDraftCategory(e.target.value)} />
                     </label>
                   </div>
 
@@ -324,9 +317,7 @@ export default function App() {
                   </button>
                 </motion.div>
               ) : (
-                <div className="emptyState largeEmpty">
-                  No product detected yet.
-                </div>
+                <div className="emptyState largeEmpty">No product detected yet.</div>
               )}
             </div>
           </section>
@@ -369,14 +360,10 @@ export default function App() {
                       <div>
                         <strong>{item.name || "Unknown product"}</strong>
                         <p className="muted">
-                          ₹{Number(item.price || 0) * Number(item.quantity || 1)} · Qty{" "}
-                          {Number(item.quantity || 1)}
+                          ₹{Number(item.price || 0) * Number(item.quantity || 1)} · Qty {Number(item.quantity || 1)}
                         </p>
                       </div>
-                      <button
-                        className="btnPrimary smallBtn"
-                        onClick={() => restoreItem(item.id)}
-                      >
+                      <button className="btnPrimary smallBtn" onClick={() => restoreItem(item.id)}>
                         Restore
                       </button>
                     </div>
